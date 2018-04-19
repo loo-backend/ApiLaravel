@@ -43,6 +43,8 @@ use Illuminate\Support\Facades\Validator;
 
 // });
 
+//https://laracasts.com/discuss/channels/general-discussion/how-to-validate-array-fields?page=3
+
 $this->post('/users', function (Request $request) {
 
     $data = $request->all();
@@ -51,7 +53,10 @@ $this->post('/users', function (Request $request) {
         'name' => 'required|string|max:255',
         'email' => 'required|string|email|max:255|unique:users',
         'password' => 'required|string|min:6|confirmed',
-        'roles' => 'required|array'
+        'roles' => 'required|array',
+        'roles.*.role' => 'required|string',
+        'roles.*.permissions' => 'required|array',
+        'roles.*.permissions.*.permission' => 'required|string',
     ]);
 
     if( $validator->fails()) {
@@ -103,7 +108,7 @@ $this->get('/userss', function (Request $request) {
 
 $this->get('/all', function (Request $request) {
 
-    return User::all();
+    return User::paginate();
 
 });
 

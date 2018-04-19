@@ -13,11 +13,53 @@ use Faker\Generator as Faker;
 |
 */
 
+function matrizRoles() {
+
+    $rand = rand(0, 3);
+    $roles = [];
+
+    if($rand === 3) {
+
+        $roles[0]['role'] = 'ADMIN';
+        $roles[0]['permissions'][0]['permission'] = ['ALL'];
+
+    } elseif($rand=== 2) {
+
+        $roles[0]['role'] = 'ADMIN_STAFF';
+        $roles[0]['permissions'][0]['permission'] = ['BROWSER','CREATE', 'READ', 'UPDATE'];
+
+    } elseif($rand=== 1) {
+
+        $roles[0]['role'] = 'CLINIC_ADMIN';
+        $roles[0]['permissions'][0]['permission'] = ['ALL'];
+
+
+    } else {
+
+        $roles[0]['role'] = 'CLINIC_STAFF';
+        $roles[0]['permissions'][0]['permission'] = ['BROWSER','CREATE', 'READ', 'UPDATE'];
+
+        $roles[1]['role'] = 'CLINIC_DOCTOR';
+        $roles[1]['permissions'][0]['permission'] = ['BROWSER','CREATE', 'READ', 'UPDATE'];
+
+    }
+
+    return $roles;
+
+}
+
+
 $factory->define(App\User::class, function (Faker $faker) {
+
+
     return [
+
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
-        'remember_token' => str_random(10),
+        'password' => bcrypt('123456'), // secret
+        'uuid' => Uuid::generate()->string,
+        'roles' => matrizRoles(),
+
     ];
+
 });
