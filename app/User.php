@@ -45,4 +45,18 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+
+    public function books()
+    {
+        return $this->embedsMany('Book');
+    }
+
+    public function scopeWhereFullText($query, $search)
+    {
+
+        $query->getQuery()->projections = ['score'=>['$meta'=>'textScore']];
+
+        return $query->whereRaw(array('$text' => array('$search' => $search)));
+    }
+
 }

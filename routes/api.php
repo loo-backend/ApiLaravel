@@ -8,6 +8,12 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 use Illuminate\Support\Facades\Validator;
 
+
+//Full Text
+
+//https://github.com/jenssegers/laravel-mongodb/wiki/Creating-Full-Text-Index-With-Laravel-Migration-Using-Moloquent
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,13 +24,13 @@ use Illuminate\Support\Facades\Validator;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-// $this->post('/users', function (Request $request) {
+$this->post('/userss', function (Request $request) {
 
-//     $data = $request->all();
+    $data = $request->all();
 
-//     return User::create($data);
+    return User::create($data);
 
-// });
+});
 
 // $this->get('/users', function (Request $request) {
 
@@ -102,13 +108,42 @@ $this->post('/login', function (Request $request) {
 $this->get('/userss', function (Request $request) {
 
     $user = User::find($request->get('id'));
-    return $user->delete();
+
+
+    //return $user->delete();
 
 });
 
 $this->get('/all', function (Request $request) {
 
     return User::paginate();
+
+});
+
+//https://stackoverflow.com/questions/46971021/how-to-find-record-matching-the-nested-key-laravel-mongodb-jenssegers
+
+$this->get('/all2', function (Request $request) {
+
+
+    // $user = User::where(
+    //     'roles',
+    //     'elemMatch',
+    //     [ 'role' => 'ADMIN' ]
+    // )->get();
+
+    // $user = User::where(
+    //     'roles',
+    //     'elemMatch',
+    //     [ 'permissions.permission' => 'create' ]
+    // )->get();
+
+     $user = User::whereFullText('Dr. Hayley Rath')
+     ->orderBy('score',['$meta'=>'textScore'])->get();
+
+
+
+
+    return $user;
 
 });
 
