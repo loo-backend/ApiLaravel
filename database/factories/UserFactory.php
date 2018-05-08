@@ -57,9 +57,35 @@ $factory->define(App\User::class, function (Faker $faker) {
 
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'password' => bcrypt('123456'), // secret
+        'password' => bcrypt('secret'), // secret
         'uuid' => Uuid::generate()->string,
         'roles' => matrizRoles(),
+
+    ];
+
+});
+
+$factory->define(App\Produto::class, function (Faker $faker) {
+
+    return [
+        '_id' => $faker->uuid,
+        'titulo' => $faker->name,
+        'fabricante' => $faker->company,
+        'preco' => $faker->randomNumber(3)
+
+    ];
+
+});
+
+$factory->define(App\Pedido::class, function (Faker $faker) {
+
+    return [
+        '_id' => $faker->uuid,
+        'usuario' => rand(1,3),
+        'produto_id' => function () {
+            return factory(App\Produto::class)->create()->id;
+        },
+        'quantidade' => $faker->randomNumber(2)
 
     ];
 

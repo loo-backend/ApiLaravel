@@ -1,7 +1,13 @@
 <?php
 
 use App\User;
+use App\Book;
+use App\Author;
 use App\Product;
+use App\Pedido;
+
+use MongoDB\BSON\ObjectID;
+
 use Illuminate\Http\Request;
 
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -120,6 +126,31 @@ $this->get('/all', function (Request $request) {
 
 });
 
+$this->post('/books', function (Request $request) {
+
+
+    $book=    Book::create(['title' => 'A Game of Thrones'. mt_rand(1,99)]);
+
+    // $book = new Book(['title' => 'A Game of Thrones']);
+
+    // $user = User::first();
+
+    // $book = $user->books()->save($book);
+
+    // return $book;
+
+    $author = new Author(['name' => 'John Doe'. mt_rand(1,99)]);
+
+
+
+    $book->author()->create(['name' => 'John Doe'. mt_rand(1,99)]);
+
+    $author = Book::find('5af1ca1e7e8a2d48cc7658aa')->author;
+
+    return $author;
+
+});
+
 //https://stackoverflow.com/questions/46971021/how-to-find-record-matching-the-nested-key-laravel-mongodb-jenssegers
 
 $this->get('/all2', function (Request $request) {
@@ -156,6 +187,37 @@ $this->group(['middleware' => 'jwt.auth'], function () {
 });
 
 
+$this->get('/pedidos', function (Request $request) {
+
+    $usuario = 2;
+
+    return Pedido::raw(function($collection) use ($usuario)
+    {
+        return $collection->aggregate(
+            [
+
+                [
+                    '$match' => ['usuario' => $usuario]
+                ],
+
+                [
+                    '$lookup' => [
+                        "from" => "produtos",
+                        "localField" => "produto_id",
+                        "foreignField" => "_id",
+                        "as" => "pedidos_realizados"
+                    ]
+                ]
+
+            ]
+        );
+    });
+
+
+
+
+
+});
 
 
 

@@ -2,9 +2,16 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
-class Book extends Model
+class Book extends Eloquent
 {
-    //
+    protected $fillable =[
+    	'title'
+    ];
+
+    public function author()
+    {
+        return $this->embedsOne(Author::class);
+    }
 }
